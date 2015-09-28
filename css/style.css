@@ -8,7 +8,7 @@
 html {
   position: relative;
   min-height: 100%;
-  background: #666;
+  background-color: #666;
 }
 #texture {
   position: absolute;
@@ -211,6 +211,72 @@ body {
 .tab-container .tabs-content > div {
   display: none;
 }
+.competitors-table {
+  margin-bottom: 15px;
+  width: 100%;
+}
+.competitors-table th {
+  font-weight: bold;
+}
+.competitors-table tr {
+  border-bottom: 1px solid #eee;
+}
+.competitors-table tr:hover {
+  background: #ccc;
+}
+.competitors-table td,
+.competitors-table th {
+  padding: 5px 15px;
+  border-right: 1px solid #eee;
+}
+.competitors-table td:last-child {
+  text-align: right;
+  border: none;
+  font-style: italic;
+}
+form.settings {
+  width: 100%;
+}
+form.settings fieldset {
+  border: 2px groove #e5e5e5;
+  padding: 15px;
+}
+form.settings legend {
+  padding: 15px;
+}
+form.settings input[type="text"],
+form.settings input[type="submit"] {
+  border: none;
+  padding: 5px;
+}
+form.settings input[type="submit"] {
+  background: #aaa;
+  color: #444;
+  cursor: pointer;
+}
+div.pattern-show {
+  display: inline-block;
+  vertical-align: bottom;
+  width: 150px;
+  border: 1px solid #aaa;
+  height: 25px;
+  padding: 5px;
+}
+table.color-settings {
+  height: 40px;
+  border-collapse: separate;
+  border-spacing: 5px;
+}
+table.color-settings #color1,
+table.color-settings #color2,
+table.color-settings #color3 {
+  cursor: pointer;
+}
+table.color-settings td {
+  vertical-align: middle;
+  text-align: center;
+  padding: 5px;
+}
 ul.icons {
   overflow: hidden;
 }
@@ -257,8 +323,10 @@ ul.icons > li span {
 h1 {
   font-size: 32px;
   line-height: 38px;
+  margin-bottom: 15px;
 }
 h2 {
   font-size: 28px;
   line-height: 32px;
+  margin-bottom: 15px;
 }

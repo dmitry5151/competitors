@@ -10,7 +10,7 @@
 html {
   position: relative;
   min-height: 100%;
-  background: #666;
+  background-color: #666;
 }
 
 #texture {
@@ -76,7 +76,7 @@ body {
 }
 
 
-//============================== Соискатель =================================//
+//=================== Соискатель (заголовок приложения) =====================//
 .add-competitor {
     margin: @global-padding 0;
     overflow: visible;
@@ -242,6 +242,73 @@ body {
     }
 }
 
+//======================= Таблица соискателей ===============================//
+.competitors-table {
+    margin-bottom: @global-padding;
+    width: 100%;
+    th {
+        font-weight: bold;
+    }
+    tr {
+        border-bottom: 1px solid #eee;
+        &:hover {
+            background: #ccc;
+        }
+    }
+    td, th {
+        padding: @global-padding-small @global-padding;
+        border-right: 1px solid #eee;
+    }
+    td:last-child {
+        text-align: right;
+        border: none;
+        font-style: italic;
+    }
+    th:last-child {
+    }
+}
+
+//============================ Вкладка настроек =============================//
+form.settings {
+    width: 100%;
+    fieldset {
+        border: 2px groove #e5e5e5;
+        padding: @global-padding;
+    }
+    legend {
+        padding: @global-padding;
+    }
+    input[type="text"], input[type="submit"] {
+        border: none;
+        padding: @global-padding-small;
+    }
+    input[type="submit"] {
+        background: #aaa;
+        color: #444;
+        cursor: pointer;
+    }
+}
+div.pattern-show {
+    display: inline-block;
+    vertical-align: bottom;
+    width: 150px;
+    border: 1px solid #aaa;
+    height: 25px;
+    padding: 5px;
+}
+table.color-settings {
+    height: 40px;
+    border-collapse: separate;
+    border-spacing: 5px;
+    #color1, #color2, #color3 {
+        cursor: pointer;
+    }
+    td {
+        vertical-align: middle;
+        text-align: center;
+        padding: @global-padding-small;
+    }
+}
 //============================== Футер ======================================//
 ul.icons {
     overflow: hidden;
@@ -297,8 +364,10 @@ ul.icons {
 h1 {
     font-size: 32px;
     line-height: 38px;
+    margin-bottom: 15px;
 }
 h2 {
     font-size: 28px;
     line-height: 32px;
+    margin-bottom: 15px;
 }

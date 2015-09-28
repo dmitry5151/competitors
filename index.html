@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="">
+<html>
     <head>
         <title>Приложение "Соискатели"</title>
         <meta charset="UTF-8">
@@ -31,11 +31,39 @@
             <div class="tabs-content">
                 <div id="tab-1">
                     <h2>Таблица</h2>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque accumsan magna lacus, sed fermentum quam vehicula id. Nam ultricies orci magna, et condimentum ipsum laoreet a. Nam faucibus felis eget odio tempor, eu iaculis mi hendrerit. Donec quis lacus tincidunt, facilisis felis quis, scelerisque lacus. Donec fringilla sollicitudin eros, nec malesuada ipsum. Maecenas nec diam pulvinar, bibendum metus mollis, pellentesque lacus. Donec in velit mollis, vulputate nibh vitae, cursus erat. Nunc blandit ultrices congue. Nulla facilisi. Nunc nec mauris id turpis feugiat dictum. Mauris tincidunt vehicula vestibulum. Praesent molestie urna sed turpis dignissim, id dignissim velit porttitor.</p>
+                    <table id="competitors" class="competitors-table">
+                        <tr>
+                            <th style="width: 50px">N</th>
+                            <th>Имя</th>
+                            <th>Фамилия</th>
+                            <th style="width: 350px">Код</th>
+                        </tr>
+                    </table>
+                    <button type="button" id="take">Получить значения</button>
                 </div>
                 <div id="tab-2">
                     <h2>Настройки</h2>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque accumsan magna lacus, sed fermentum quam vehicula id. Nam ultricies orci magna, et condimentum ipsum laoreet a. Nam faucibus felis eget odio tempor, eu iaculis mi hendrerit. Donec quis lacus tincidunt, facilisis felis quis, scelerisque lacus. Donec fringilla sollicitudin eros, nec malesuada ipsum. Maecenas nec diam pulvinar, bibendum metus mollis, pellentesque lacus. Donec in velit mollis, vulputate nibh vitae, cursus erat. Nunc blandit ultrices congue. Nulla facilisi. Nunc nec mauris id turpis feugiat dictum. Mauris tincidunt vehicula vestibulum. Praesent molestie urna sed turpis dignissim, id dignissim velit porttitor.</p>
+                    <form class="settings">
+                        <fieldset>
+                            <legend>Паттерн валидации фамилии</legend>
+                            <div>
+                                <label for="pattern">Паттерн: <input name="pattern" type="text" placeholder="введите паттерн" /></label>
+                                <div class="pattern-show" id="pattern-show"></div>
+                                <input type="submit" value="Сохранить" onclick="return false" />
+                            </div>
+                        </fieldset>
+                        <fieldset>
+                            <legend>Внешний вид</legend>
+                            <table class="color-settings">
+                                <tr>
+                                    <td class="caption">Выберите цвет фона:</td>
+                                    <td style="width: 100px;" id="color1">Текущий</td>
+                                    <td style="width: 100px;" id="color2"></td>
+                                    <td style="width: 100px;" id="color3"></td>
+                                </tr>
+                            </table>
+                        </fieldset>
+                    </form>
                 </div>
             </div>
         </div>
