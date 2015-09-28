@@ -69,7 +69,7 @@ body {
         font-size: 18px;
         color: white;
         span {
-            color: #555;
+            color: #f1f1f1;
             font-weight: bold;
         }
     }
@@ -79,21 +79,105 @@ body {
 //============================== Соискатель =================================//
 .add-competitor {
     margin: @global-padding 0;
+    overflow: visible;
     position: relative;
     z-index: 2;
-    .clip {
+    .plus {
         width: 40px;
         height: 40px;
-        background: url('../img/sprite-clips.png') 0 0 no-repeat;
-        &:hover {
-            background: url('../img/sprite-clips.png') 0 -40px no-repeat;
-        }
+        background: url('../img/sprite-plus.png') 0 0 no-repeat;
+        cursor: pointer;
     }
     .txt {
         vertical-align: middle;
         padding: 0 @global-padding;
         font-size: 18px;
         color: #fff;
+    }
+}
+
+//============================ Всплывающая форма ===========================//
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    z-index: 99;
+    background: rgba(0,0,0,.4);
+
+    display: none;
+}
+
+.add {
+    position: absolute;
+    top: 85px;
+    left: 35px;
+    height: 250px;
+    width: 505px;
+    //background: #4b78bb;
+    background: url('../img/card.png') no-repeat;
+    z-index: 100;
+    .h1 {
+        font-size: 26px;
+        color: #fff;
+        line-height: 60px;
+        padding: 0 @global-padding;
+        text-align: right;
+    }
+    &-form {
+        label {
+            color: #fff;
+            font-size: 24px;
+        }
+        input[type="text"] {
+            padding: @global-padding-small;
+            font-size: 24px;
+            color: #4b78bb;
+            background: #fff;
+            border: none !important;
+            font-style: italic;
+            border-radius: @border-radius;
+
+            &::-moz-placeholder, &::-webkit-input-placeholder {
+                color: lighten(#4b78bb, 20%);
+            }
+        }
+        input[type="submit"] {
+            padding: @global-padding-small @global-padding;
+            font-size: 24px;
+            color: #4b78bb;
+            background: #dadada;
+            border: none !important;
+            border-radius: @border-radius;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    }
+    &-form-group {
+        padding: 0 45px 15px 15px;
+        text-align: right;
+    }
+}
+
+.cansel {
+    position: absolute;
+    top: 225px;
+    left: 480px;
+    width: auto !important;
+    cursor: pointer;
+    z-index: 101;
+    &-img {
+        height: 40px;
+        width: 40px;
+        background: url('../img/sprite-plus.png') -120px 0 no-repeat;
+    }
+    &-txt {
+        padding: 0 10px;
+        color: #4b78bb;
+        font-size: 18px;
+        font-weight: bold;
+        vertical-align: middle !important;
     }
 }
 
