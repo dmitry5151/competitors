@@ -254,3 +254,11 @@ ul.icons > li span {
 .footer .author span {
   color: white;
 }
+h1 {
+  font-size: 32px;
+  line-height: 38px;
+}
+h2 {
+  font-size: 28px;
+  line-height: 32px;
+}

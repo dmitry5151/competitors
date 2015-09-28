@@ -1,16 +1,12 @@
 <!DOCTYPE html>
-<!--
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
--->
 <html ng-app="">
     <head>
         <title>Приложение "Соискатели"</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script src="js/jquery-2.1.4.min.js" type="text/javascript"></script>
-        <script src="js/angular.min.js" type="text/javascript"></script>
+        <!--script src="js/angular.min.js" type="text/javascript"></script-->
+        <script src="js/script.js" type="text/javascript"></script>
         <link href="css/reset.css" rel="stylesheet" type="text/css"/>
         <link href="css/style.css" rel="stylesheet" type="text/css"/>
     </head>
@@ -23,17 +19,17 @@ and open the template in the editor.
         </header>
         <div class="container add-competitor"><!-- Добавить соискателя -->
             <div class="c-table">
-                <div class="c-cell plus"></div>
+                <div class="c-cell plus" id="show-form"></div>
                 <div class="c-cell txt">Добавить соискателя</div>
             </div>
         </div>
         <div class="container tab-container">
             <ul class="tabs">
-                <li><a class="active" href="tab-1">Таблица</a></li>
-                <li><a class="" href="tab-2">Настройки</a></li>
+                <li><a href="tab-1">Таблица</a></li>
+                <li><a href="tab-2">Настройки</a></li>
             </ul>
             <div class="tabs-content">
-                <div id="tab-1" style="display: block">
+                <div id="tab-1">
                     <h2>Таблица</h2>
                     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque accumsan magna lacus, sed fermentum quam vehicula id. Nam ultricies orci magna, et condimentum ipsum laoreet a. Nam faucibus felis eget odio tempor, eu iaculis mi hendrerit. Donec quis lacus tincidunt, facilisis felis quis, scelerisque lacus. Donec fringilla sollicitudin eros, nec malesuada ipsum. Maecenas nec diam pulvinar, bibendum metus mollis, pellentesque lacus. Donec in velit mollis, vulputate nibh vitae, cursus erat. Nunc blandit ultrices congue. Nulla facilisi. Nunc nec mauris id turpis feugiat dictum. Mauris tincidunt vehicula vestibulum. Praesent molestie urna sed turpis dignissim, id dignissim velit porttitor.</p>
                 </div>
@@ -75,7 +71,7 @@ and open the template in the editor.
                         <input type="submit" value="OK" />
                     </div>
                 </form>
-                <div class="cansel c-table">
+                <div class="cansel c-table" id="cansel">
                     <div class="c-cell cansel-img"></div>
                     <div class="c-cell cansel-txt">Отмена</div>
                 </div>
