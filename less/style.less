@@ -259,13 +259,20 @@ body {
         padding: @global-padding-small @global-padding;
         border-right: 1px solid #eee;
     }
-    td:last-child {
-        text-align: right;
+    td:last-child, th:last-child {
         border: none;
+        padding: @global-padding-small;
+    }
+    td:first-child, th:first-child {
+        padding: @global-padding-small;
+    }
+    td:nth-child(4) {
         font-style: italic;
+        color: #aaa;
     }
-    th:last-child {
-    }
+}
+.user-edit, .user-delete {
+    cursor: pointer;
 }
 
 //============================ Вкладка настроек =============================//

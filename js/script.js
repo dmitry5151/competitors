@@ -4,7 +4,7 @@ $(function() {
   /*
   Всплытие/скрытие формы
    */
-  var ajax, bg, cells, competitor, curBg, overlay, responce, tab, tabs;
+  var activateUser, ajax, bg, cells, competitor, curBg, deleteUser, getUser, overlay, responce, tabs, updateUser;
   overlay = $('.overlay');
   $('.add').click(function(event) {
     event.stopPropagation();
@@ -59,14 +59,15 @@ $(function() {
   /*
   Таблица соискателей - стили, управление строками
    */
-  tab = $('#competitors');
-  $('#competitors tr:even').css({
-    background: '#ccc'
-
-    /*
-    Таблица настроек - цвета ячеек
-     */
+  $('#competitors').on('change', function() {
+    $('#competitors tr:even').css({
+      background: '#ccc'
+    });
   });
+
+  /*
+  Таблица настроек - цвета ячеек
+   */
   bg = $('html');
   curBg = bg.css('background-color');
   cells = $('.color-settings td').not('.caption');
@@ -120,16 +121,13 @@ $(function() {
   });
 
   /*
-  Создаем запрос
+  = Создаем запрос ===============================================================
    */
   competitor = {
     "id": "",
     "name": "Черт",
     "surname": "Лесной"
   };
-  $('#take').on('click', function() {
-    ajax('/applicants', 'GET', '');
-  });
 
   /*
   Ajax
@@ -147,6 +145,41 @@ $(function() {
   };
 
   /*
+  = Действия с пользователями ====================================================
+   */
+  getUser = function(id) {};
+  deleteUser = function(id) {
+    console.log("Удаление пользователя с id = " + id);
+  };
+  updateUser = function(id, name, surname) {
+    return true;
+  };
+  activateUser = function() {
+    $('.user-delete').on('click', function() {
+      var uid;
+      uid = $(this).parent().parent().find('.user-id').text();
+      deleteUser(uid);
+    });
+    $('.user-edit').on('click', function() {
+      var name, params, res, surname, uid, userEditStr;
+      params = $(this).parent().parent();
+      uid = params.find('.user-id').text();
+      name = params.find('.user-name').text();
+      surname = params.find('.user-surname').text();
+      userEditStr = "";
+      userEditStr = "<tr>\n    <td></td>\n    <td><input type=\"text\" value=\"" + name + "\" /></td>\n    <td><input type=\"text\" value=\"" + surname + "\" /></td>\n    <td><button class=\"save\" type=\"button\">Сохранить</button><button type=\"button\">Отмена</button></td>\n    <td></td>\n</tr>";
+      params.after(userEditStr);
+      params.hide();
+      res = function() {
+        $('.save').click(function() {
+          return updateUser(uid, name, surname);
+        });
+      };
+      console.log(res);
+    });
+  };
+
+  /*
   Обработка ответа сервера
    */
   responce = function(data) {
@@ -154,8 +187,14 @@ $(function() {
     user = "";
     for (j = 0, len = data.length; j < len; j++) {
       i = data[j];
-      user += "<tr>\n    <td></td>\n    <td>" + i.name + "</td>\n    <td>" + i.surname + "</td>\n    <td>" + i.id + "</td>\n</tr>";
+      user += "<tr>\n    <td><img class=\"user-edit\" src=\"img/user-edit.png\" /></td>\n    <td class=\"user-name\">" + i.name + "</td>\n    <td class=\"user-surname\">" + i.surname + "</td>\n    <td class=\"user-id\">" + i.id + "</td>\n    <td><img class=\"user-delete\" src=\"img/user-delete.png\" /></td>\n</tr>";
     }
     $('#competitors').append(user);
+    activateUser();
   };
+
+  /*
+  Инициализируем приложение
+   */
+  ajax('/applicants', 'GET', '');
 });

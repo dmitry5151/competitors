@@ -229,10 +229,22 @@ body {
   padding: 5px 15px;
   border-right: 1px solid #eee;
 }
-.competitors-table td:last-child {
-  text-align: right;
+.competitors-table td:last-child,
+.competitors-table th:last-child {
   border: none;
+  padding: 5px;
+}
+.competitors-table td:first-child,
+.competitors-table th:first-child {
+  padding: 5px;
+}
+.competitors-table td:nth-child(4) {
   font-style: italic;
+  color: #aaa;
+}
+.user-edit,
+.user-delete {
+  cursor: pointer;
 }
 form.settings {
   width: 100%;
