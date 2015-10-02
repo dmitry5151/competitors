@@ -247,7 +247,7 @@ body {
         position: relative;
         z-index: 1;
         &>div {
-            display: none;
+            //display: none;
         }
     }
 }
@@ -325,6 +325,14 @@ table.color-settings {
     td {
         vertical-align: middle;
         text-align: center;
+        padding: @global-padding-small;
+    }
+}
+table.new-color {
+    border-collapse: separate;
+    border-spacing: 5px;
+    td {
+        vertical-align: middle;
         padding: @global-padding-small;
     }
 }

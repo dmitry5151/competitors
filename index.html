@@ -1,16 +1,19 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="manageCompetitors">
     <head>
         <title>Приложение "Соискатели"</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <script src="js/jquery-2.1.4.min.js" type="text/javascript"></script>
-        <!--script src="js/angular.min.js" type="text/javascript"></script-->
-        <script src="js/script.js" type="text/javascript"></script>
+        <!-- Скрипты -->
+        <!--script src="js/jquery-2.1.4.min.js" type="text/javascript"></script-->
+        <script src="js/angular.min.js" type="text/javascript"></script>
+        <script src="js/angularapp.js" type="text/javascript"></script>
+        <!--script src="js/script.js" type="text/javascript"></script-->
+        <!-- Стили -->
         <link href="css/reset.css" rel="stylesheet" type="text/css"/>
         <link href="css/style.css" rel="stylesheet" type="text/css"/>
     </head>
-    <body>
+    <body ng-controller="compCtrl">
         <header class="header">
             <div class="c-table">
                 <div class="c-cell clip"></div>
@@ -23,53 +26,14 @@
                 <div class="c-cell txt">Добавить соискателя</div>
             </div>
         </div>
+        <div class="container"><h1>{{tab}}</h1></div>
         <div class="container tab-container">
             <ul class="tabs">
-                <li><a href="tab-1">Таблица</a></li>
-                <li><a href="tab-2">Настройки</a></li>
-                <li><a href="tab-3">Об авторе</a></li>
+                <li ng-repeat="li in tabs"><a ng-class="li.class" href="li.id" ng-click="showTab(li.tab)" onClick="return false">{{li.name}}</a></li>
             </ul>
             <div class="tabs-content">
-                <div id="tab-1">
-                    <h2>Соискатели</h2>
-                    <table id="competitors" class="competitors-table">
-                        <tr>
-                            <th style="width: 30px"></th>
-                            <th>Имя</th>
-                            <th>Фамилия</th>
-                            <th style="width: 350px">Код</th>
-                            <th style="width: 30px"></th>
-                        </tr>
-                    </table>
-                    <button type="button" id="users-delete-all">Удалить всех!</button>
-                </div>
-                <div id="tab-2">
-                    <h2>Настройки</h2>
-                    <form class="settings">
-                        <fieldset>
-                            <legend>Паттерн валидации фамилии</legend>
-                            <div>
-                                <label for="pattern">Паттерн: <input id="pattern" name="pattern" type="text" placeholder="введите паттерн" /></label>
-                                <div class="pattern-show" id="pattern-show"></div>
-                                <input type="submit" id="saveSettings" value="Обновить" />
-                            </div>
-                        </fieldset>
-                        <fieldset>
-                            <legend>Внешний вид</legend>
-                            <table class="color-settings">
-                                <tr>
-                                    <td class="caption">Выберите цвет фона:</td>
-                                    <td style="width: 100px;" id="color1">Текущий</td>
-                                    <td style="width: 100px;" id="color2"></td>
-                                    <td style="width: 100px;" id="color3"></td>
-                                </tr>
-                            </table>
-                        </fieldset>
-                        <button type="button" id="resetSettings">Сбросить настройки</button>
-                    </form>
-                </div>
-                <div id="tab-3">
-                    
+                <div ng-repeat="tab in tabs" id="{{tab.id}}" ng-show="tab.show">
+                    <ng-include src="tab.file"></ng-include>
                 </div>
             </div>
         </div>
