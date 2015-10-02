@@ -10,7 +10,7 @@
 html {
   position: relative;
   min-height: 100%;
-  background-color: #666;
+  //background-color: #666;
 }
 
 #texture {
@@ -157,6 +157,16 @@ body {
     &-form-group {
         padding: 0 45px 15px 15px;
         text-align: right;
+        &>div {
+            float: left;
+            display: inline-block;
+            label {
+                font-size: 14px;
+            }
+            input {
+                vertical-align: middle;
+            }
+        }
     }
 }
 
@@ -281,15 +291,16 @@ form.settings {
     fieldset {
         border: 2px groove #e5e5e5;
         padding: @global-padding;
+        margin-bottom: @global-padding;
     }
     legend {
         padding: @global-padding;
     }
-    input[type="text"], input[type="submit"] {
+    input[type="text"], input[type="submit"], button[type="button"] {
         border: none;
         padding: @global-padding-small;
     }
-    input[type="submit"] {
+    input[type="submit"], button[type="button"] {
         background: #aaa;
         color: #444;
         cursor: pointer;
@@ -298,7 +309,7 @@ form.settings {
 div.pattern-show {
     display: inline-block;
     vertical-align: bottom;
-    width: 150px;
+    width: 200px;
     border: 1px solid #aaa;
     height: 25px;
     padding: 5px;

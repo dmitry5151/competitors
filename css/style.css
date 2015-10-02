@@ -8,7 +8,6 @@
 html {
   position: relative;
   min-height: 100%;
-  background-color: #666;
 }
 #texture {
   position: absolute;
@@ -138,6 +137,16 @@ body {
   padding: 0 45px 15px 15px;
   text-align: right;
 }
+.add-form-group > div {
+  float: left;
+  display: inline-block;
+}
+.add-form-group > div label {
+  font-size: 14px;
+}
+.add-form-group > div input {
+  vertical-align: middle;
+}
 .cansel {
   position: absolute;
   top: 225px;
@@ -252,16 +261,19 @@ form.settings {
 form.settings fieldset {
   border: 2px groove #e5e5e5;
   padding: 15px;
+  margin-bottom: 15px;
 }
 form.settings legend {
   padding: 15px;
 }
 form.settings input[type="text"],
-form.settings input[type="submit"] {
+form.settings input[type="submit"],
+form.settings button[type="button"] {
   border: none;
   padding: 5px;
 }
-form.settings input[type="submit"] {
+form.settings input[type="submit"],
+form.settings button[type="button"] {
   background: #aaa;
   color: #444;
   cursor: pointer;
@@ -269,7 +281,7 @@ form.settings input[type="submit"] {
 div.pattern-show {
   display: inline-block;
   vertical-align: bottom;
-  width: 150px;
+  width: 200px;
   border: 1px solid #aaa;
   height: 25px;
   padding: 5px;

@@ -30,7 +30,7 @@
             </ul>
             <div class="tabs-content">
                 <div id="tab-1">
-                    <h2>Таблица</h2>
+                    <h2>Соискатели</h2>
                     <table id="competitors" class="competitors-table">
                         <tr>
                             <th style="width: 30px"></th>
@@ -40,7 +40,7 @@
                             <th style="width: 30px"></th>
                         </tr>
                     </table>
-                    <button type="button" id="take">Получить значения</button>
+                    <button type="button" id="users-delete-all">Удалить всех!</button>
                 </div>
                 <div id="tab-2">
                     <h2>Настройки</h2>
@@ -48,9 +48,9 @@
                         <fieldset>
                             <legend>Паттерн валидации фамилии</legend>
                             <div>
-                                <label for="pattern">Паттерн: <input name="pattern" type="text" placeholder="введите паттерн" /></label>
+                                <label for="pattern">Паттерн: <input id="pattern" name="pattern" type="text" placeholder="введите паттерн" /></label>
                                 <div class="pattern-show" id="pattern-show"></div>
-                                <input type="submit" value="Сохранить" onclick="return false" />
+                                <input type="submit" id="saveSettings" value="Обновить" />
                             </div>
                         </fieldset>
                         <fieldset>
@@ -64,6 +64,7 @@
                                 </tr>
                             </table>
                         </fieldset>
+                        <button type="button" id="resetSettings">Сбросить настройки</button>
                     </form>
                 </div>
             </div>
@@ -89,14 +90,15 @@
         <div class="overlay">
             <div class="add">
                 <div class="h1">Добавить соискателя</div>
-                <form action="" class="add-form">
+                <form action="" class="add-form" id="new-user" onSubmit="return false">
                     <div class="add-form-group">
-                        <label for="firstname">Имя: <input name="firstname" type="text" placeholder="Ваше имя" /></label>
+                        <label for="firstname">Имя: <input name="firstname" id="new-user-name" type="text" placeholder="Ваше имя" /></label>
                     </div>
                     <div class="add-form-group">
-                        <label for="surname">Фамилия: <input name="surname" type="text" placeholder="Фамилия" /></label>
+                        <label for="surname">Фамилия: <input name="surname" id="new-user-surname" type="text" placeholder="Фамилия" /></label>
                     </div>
                     <div class="add-form-group">
+                        <div><label for="multi"><input name="multi" id="multiAdd" type="checkbox" /> Добавить нескольких</label></div>
                         <input type="submit" value="OK" />
                     </div>
                 </form>

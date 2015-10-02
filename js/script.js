@@ -4,7 +4,7 @@ $(function() {
   /*
   Всплытие/скрытие формы
    */
-  var activateUser, ajax, bg, cells, competitor, curBg, deleteUser, getUser, overlay, responce, tabs, updateUser;
+  var activateUsers, addUser, ajax, bg, cells, curBg, deleteAllUsers, deleteUser, getUser, loadSettings, overlay, showUsers, striped, tabs, updateSettings, updateUser;
   overlay = $('.overlay');
   $('.add').click(function(event) {
     event.stopPropagation();
@@ -14,6 +14,8 @@ $(function() {
   });
   $('#show-form').click(function() {
     overlay.show();
+    $('#new-user-name').focus().val("");
+    $('#new-user-surname').val("");
   });
   $('#cansel').click(function() {
     overlay.hide();
@@ -59,14 +61,14 @@ $(function() {
   /*
   Таблица соискателей - стили, управление строками
    */
-  $('#competitors').on('change', function() {
+  striped = function() {
     $('#competitors tr:even').css({
       background: '#ccc'
     });
-  });
+  };
 
   /*
-  Таблица настроек - цвета ячеек
+  =================== Таблица настроек - цвета ячеек =============================
    */
   bg = $('html');
   curBg = bg.css('background-color');
@@ -89,9 +91,15 @@ $(function() {
       'background-color': curBg
     });
   }).on('click', function() {
+    var set;
     curBg = '#666';
     cells.text('');
     $(this).text("Текущий");
+    set = {
+      "background": "#666",
+      "curID": "#color1"
+    };
+    ajax('6', '/settings', 'PUT', set);
   });
   $('#color2').on('mouseover', function() {
     bg.css({
@@ -102,9 +110,15 @@ $(function() {
       'background-color': curBg
     });
   }).on('click', function() {
+    var set;
     curBg = '#999';
     cells.text('');
     $(this).text("Текущий");
+    set = {
+      "background": "#999",
+      "curID": "#color2"
+    };
+    ajax('6', '/settings', 'PUT', set);
   });
   $('#color3').on('mouseover', function() {
     bg.css({
@@ -115,31 +129,116 @@ $(function() {
       'background-color': curBg
     });
   }).on('click', function() {
+    var set;
     curBg = '#eee';
     cells.text('');
     $(this).text("Текущий");
+    set = {
+      "background": "#eee",
+      "curID": "#color3"
+    };
+    ajax('6', '/settings', 'PUT', set);
   });
 
   /*
-  = Создаем запрос ===============================================================
+  = Настройки приложения =========================================================
    */
-  competitor = {
-    "id": "",
-    "name": "Черт",
-    "surname": "Лесной"
+  $('form.settings').on('submit', function() {
+    var newPattern, patVal, setting;
+    patVal = $('#pattern').val().trim();
+    if (patVal.charAt(0) === "/") {
+      patVal = patVal.slice(1);
+    }
+    if (patVal.charAt(patVal.length - 1) === "/") {
+      patVal = patVal.slice(0, patVal.length - 1);
+    }
+    setting = {
+      "setting": "pattern"
+    };
+    newPattern = {
+      "pattern": patVal
+    };
+    ajax('6', '/settings', 'PUT', newPattern, setting);
+    return false;
+  });
+  $('#resetSettings').on('click', function() {
+    var resSet;
+    resSet = confirm("Сбросить все настройки?");
+    if (resSet) {
+      ajax('7', '/settings', 'DELETE');
+    }
+  });
+  loadSettings = function(data) {
+    $('html').css({
+      'background-color': data.background
+    });
+    curBg = data.background;
+    $('.color-settings td').not('.caption').text('');
+    $(".color-settings td" + data.curID).text("Текущий");
+    $("#pattern-show").text(data.pattern);
+    console.log(data);
+  };
+  updateSettings = function(data) {
+    var pv;
+    if (data) {
+      switch (data.setting) {
+        case "pattern":
+          pv = $('#pattern').val();
+          if (pv.charAt(0) === "/") {
+            pv = pv.slice(1);
+          }
+          if (pv.charAt(pv.length - 1) === "/") {
+            pv = pv.slice(0, pv.length - 1);
+          }
+          $('#saveSettings').val("Сохранено");
+          $('#pattern-show').text(pv);
+          break;
+        default:
+          return;
+      }
+    } else {
+      console.log("Нет доп. настроек");
+    }
   };
 
   /*
   Ajax
    */
-  ajax = function(uri, type, send) {
+  ajax = function(flag, uri, type, send, elem) {
     $.ajax({
       crossDomain: true,
       url: "http://applicants-tenet.rhcloud.com/api/1/dmitry5151" + uri,
       type: type,
       data: send,
+      error: function(xhr, msg) {},
+      statusCode: {
+        400: function() {
+          alert("Ошибка выполнения ajax запроса!");
+        }
+      },
       success: function(data) {
-        responce(data);
+        switch (flag) {
+          case "0":
+            showUsers(data);
+            break;
+          case "1":
+            addUser(data, send);
+            break;
+          case "2":
+            updateUser(elem);
+            break;
+          case "3":
+            deleteUser(elem);
+            break;
+          case "4":
+            deleteAllUsers(data);
+            break;
+          case "5":
+            loadSettings(data);
+            break;
+          case "6":
+            updateSettings(elem);
+        }
       }
     });
   };
@@ -147,54 +246,135 @@ $(function() {
   /*
   = Действия с пользователями ====================================================
    */
+  showUsers = function(data) {
+    var i, j, len, user;
+    user = "";
+    for (j = 0, len = data.length; j < len; j++) {
+      i = data[j];
+      user += "<tr>\n    <td><img class=\"user-edit\" src=\"img/user-edit.png\" /></td>\n    <td class=\"user-name\">" + i.name + "</td>\n    <td class=\"user-surname\">" + i.surname + "</td>\n    <td class=\"user-id\">" + i.id + "</td>\n    <td><img title=\"Удалить соискателя\" class=\"user-delete\" src=\"img/user-delete.png\" /></td>\n</tr>";
+    }
+    $('#competitors').append(user);
+    striped();
+    activateUsers();
+  };
   getUser = function(id) {};
-  deleteUser = function(id) {
-    console.log("Удаление пользователя с id = " + id);
+  deleteUser = function(elem) {
+    console.log("Соискатель успешно удален");
+    elem.slideUp().remove();
+    striped();
   };
-  updateUser = function(id, name, surname) {
-    return true;
+  updateUser = function(data) {
+    data.uetr.remove();
+    data.tr.show();
+    console.log("Сохранено");
+    $('#competitors tr:not(:first-child)').remove();
+    ajax('0', '/applicants', 'GET', '');
   };
-  activateUser = function() {
+  $('#new-user').submit(function() {
+    var newUser, newUserName, newUserSurname, pattern;
+    newUserName = $('#new-user-name').val();
+    newUserSurname = $('#new-user-surname').val();
+    pattern = new RegExp($("#pattern-show").text());
+    if ((pattern.test(newUserName)) && (pattern.test(newUserSurname))) {
+      console.log("Шаблон прошел провеку");
+      newUser = {
+        "name": newUserName,
+        "surname": newUserSurname
+      };
+      ajax('1', '/applicants', 'POST', newUser);
+    } else {
+      console.log("Проверка не пройдена");
+      alert("Имя или фамилия введены некорректно!");
+    }
+    return false;
+  });
+  addUser = function(data, newUserData) {
+    var newUserStr;
+    newUserStr = "<tr>\n    <td><img class=\"user-edit\" src=\"img/user-edit.png\" /></td>\n    <td class=\"user-name\">" + newUserData.name + "</td>\n    <td class=\"user-surname\">" + newUserData.surname + "</td>\n    <td class=\"user-id\">" + data.id + "</td>\n    <td><img title=\"Удалить соискателя\" class=\"user-delete\" src=\"img/user-delete.png\" /></td>\n</tr>";
+    $('#competitors').append(newUserStr);
+    striped();
+    activateUsers();
+    if (!$('#multiAdd').prop("checked")) {
+      overlay.hide();
+    } else {
+      $('#new-user-name').focus().val("");
+      $('#new-user-surname').val("");
+    }
+  };
+  activateUsers = function() {
+    $('.user-delete').off();
+    $('.user-edit').off();
     $('.user-delete').on('click', function() {
-      var uid;
-      uid = $(this).parent().parent().find('.user-id').text();
-      deleteUser(uid);
+      var deleteThisUser, elem, uid;
+      deleteThisUser = confirm("Вы уверены, что хотите удалить соискателя?");
+      if (deleteThisUser) {
+        elem = $(this).parent().parent();
+        uid = elem.find('.user-id').text();
+        ajax('3', "/applicants/" + uid, 'DELETE', '', elem);
+      }
     });
     $('.user-edit').on('click', function() {
-      var name, params, res, surname, uid, userEditStr;
+      var editCansel, editName, editSave, editSurname, name, params, surname, uid, userEditStr, userEditTr;
       params = $(this).parent().parent();
       uid = params.find('.user-id').text();
       name = params.find('.user-name').text();
       surname = params.find('.user-surname').text();
       userEditStr = "";
-      userEditStr = "<tr>\n    <td></td>\n    <td><input type=\"text\" value=\"" + name + "\" /></td>\n    <td><input type=\"text\" value=\"" + surname + "\" /></td>\n    <td><button class=\"save\" type=\"button\">Сохранить</button><button type=\"button\">Отмена</button></td>\n    <td></td>\n</tr>";
+      userEditStr = "<tr id=\"edit\">\n    <td></td>\n    <td><input class=\"user-edit-name\" type=\"text\" value=\"" + name + "\" /></td>\n    <td><input class=\"user-edit-surname\" type=\"text\" value=\"" + surname + "\" /></td>\n    <td><button class=\"user-edit-save\" type=\"button\">Сохранить</button><button class=\"user-edit-cansel\" type=\"button\">Отмена</button></td>\n    <td></td>\n</tr>";
       params.after(userEditStr);
       params.hide();
-      res = function() {
-        $('.save').click(function() {
-          return updateUser(uid, name, surname);
-        });
-      };
-      console.log(res);
+      userEditTr = params.next();
+      editName = userEditTr.find('.user-edit-name');
+      editSurname = userEditTr.find('.user-edit-surname');
+      editCansel = userEditTr.find('.user-edit-cansel');
+      editSave = userEditTr.find('.user-edit-save');
+      editCansel.on('click', function() {
+        userEditTr.remove();
+        params.show();
+      });
+      editSave.on('click', function() {
+        var data, update;
+        update = {
+          "name": editName.val(),
+          "surname": editSurname.val()
+        };
+        data = {
+          "uetr": userEditTr,
+          "tr": params
+        };
+        ajax('2', "/applicants/" + uid, 'PUT', update, data);
+      });
     });
   };
-
-  /*
-  Обработка ответа сервера
-   */
-  responce = function(data) {
-    var i, j, len, user;
-    user = "";
-    for (j = 0, len = data.length; j < len; j++) {
-      i = data[j];
-      user += "<tr>\n    <td><img class=\"user-edit\" src=\"img/user-edit.png\" /></td>\n    <td class=\"user-name\">" + i.name + "</td>\n    <td class=\"user-surname\">" + i.surname + "</td>\n    <td class=\"user-id\">" + i.id + "</td>\n    <td><img class=\"user-delete\" src=\"img/user-delete.png\" /></td>\n</tr>";
+  $('#users-delete-all').on('click', function() {
+    var deleteAll;
+    deleteAll = confirm("Вы уверены, что хотите очистить список соискателей?");
+    if (deleteAll) {
+      ajax('4', '/applicants', 'DELETE', '');
     }
-    $('#competitors').append(user);
-    activateUser();
+  });
+  deleteAllUsers = function(data) {
+    $('#competitors tr:not(:first-child)').remove();
+    return console.log("Успешное удаление");
   };
 
   /*
-  Инициализируем приложение
+  = Инициализируем приложение ====================================================
    */
-  ajax('/applicants', 'GET', '');
+  ajax('0', '/applicants', 'GET');
+  ajax('5', '/settings', 'GET');
 });
+
+
+/*
+Значения флагов ajax запросов
+
+0 - Начальная загрузка всех пользователей, имеющихся в базе
+1 - Добавление нового соискателя
+2 - Редактирование соискателя
+3 - Удаление соискателя
+4 - Удаление всех соискателей
+5 - Загрузка настроек
+6 - Обновление настроек
+7 - Сброс настроек
+ */
