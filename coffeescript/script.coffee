@@ -342,9 +342,6 @@ $ ->
           "tr": params
         ajax '2', "/applicants/#{uid}", 'PUT', update, data
         return
-
-      # Если ответ TRUE - скрываем редактирование и показываем обновленную строку
-      # Если FALSE - выводим сообщение об ошибке
       return
 
     return
