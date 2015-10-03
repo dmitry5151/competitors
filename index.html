@@ -13,7 +13,7 @@
         <link href="css/reset.css" rel="stylesheet" type="text/css"/>
         <link href="css/style.css" rel="stylesheet" type="text/css"/>
     </head>
-    <body ng-controller="compCtrl">
+    <body ng-controller="compCtrl" style="background-color: {{settings.background}}">
         <header class="header">
             <div class="c-table">
                 <div class="c-cell clip"></div>
@@ -26,14 +26,69 @@
                 <div class="c-cell txt">Добавить соискателя</div>
             </div>
         </div>
-        <div class="container"><h1>{{tab}}</h1></div>
         <div class="container tab-container">
             <ul class="tabs">
-                <li ng-repeat="li in tabs"><a ng-class="li.class" href="li.id" ng-click="showTab(li.tab)" onClick="return false">{{li.name}}</a></li>
+                <li ng-repeat="li in tabs"><a ng-class="li.class" href="#" ng-click="showTab(li.tab)" onClick="return false">{{li.name}}</a></li>
             </ul>
-            <div class="tabs-content">
-                <div ng-repeat="tab in tabs" id="{{tab.id}}" ng-show="tab.show">
-                    <ng-include src="tab.file"></ng-include>
+            <div class="tabs-content" ng-switch on="tab.number">
+                <div id="tab-1" ng-switch-default>
+                    <h2>Соискатели</h2>
+                    <table id="competitors" class="competitors-table">
+                        <tr>
+                            <th style="width: 30px"></th>
+                            <th>Имя</th>
+                            <th>Фамилия</th>
+                            <th style="width: 350px">Код</th>
+                            <th style="width: 30px"></th>
+                        </tr>
+                        <tr ng-repeat="competitor in competitors">
+                            <td><img class="user-edit" src="img/user-edit.png" alt="Редактировать" /></td>
+                            <td class="user-name">{{competitor.name}}</td>
+                            <td class="user-surname">{{competitor.surname}}</td>
+                            <td class="user-id">{{competitor.id}}</td>
+                            <td><img title="Удалить соискателя" class="user-delete" src="img/user-delete.png" /></td>
+                        </tr>
+                    </table>
+                    <button type="button" id="users-delete-all">Удалить всех!</button>
+                </div>
+                <div id="tab-2" ng-switch-when="2">
+                    <h2>Настройки</h2>
+                    <form class="settings">
+                        <fieldset>
+                            <legend>Паттерн валидации фамилии</legend>
+                            <div>
+                                <label for="pattern">Паттерн: <input id="pattern" name="pattern" type="text" placeholder="введите паттерн" /></label>
+                                <div class="pattern-show" id="pattern-show"></div>
+                                <input type="submit" id="saveSettings" value="Обновить" />
+                            </div>
+                        </fieldset>
+                    </form>
+                    <form name="colorSettings" class="settings" ng-submit="addBgColor()">
+                        <fieldset>
+                            <legend>Внешний вид</legend>
+                            <table class="color-settings">
+                                <tr>
+                                    <td class="caption">Выберите цвет фона:</td>
+                                    <td ng-repeat="bgColor in bgColors" style="width: 75px; background-color: {{bgColor}}" ng-click="setBgColor(bgColor)"></td>
+                                    <!--td><button type='button'>Сохранить</button></td-->
+                                </tr>
+                            </table>
+                            <table class='new-color'>
+                                <tr>
+                                    <td><input type="text" name="newColorVal" ng-model="newColor.value" ng-pattern="/^#[0-9a-f]{6}/i" ng-trim placeholder='добавьте цвет фона'/></td>
+                                    <td><input type="submit" value='Добавить' /></td>
+                                    <td ng-show="colorSettings.newColorVal.$valid" style="width: 100px; background-color: {{newColor.value}}"></td>
+                                </tr>
+                            </table>
+                        </fieldset>
+                        <button type="button" id="resetSettings">Сбросить настройки</button>
+                        <div>
+                            {{settings}}
+                        </div>
+                    </form>
+                </div>
+                <div id="tab-3" ng-switch-when="3">
+                    <h2>Об авторе</h2>
                 </div>
             </div>
         </div>

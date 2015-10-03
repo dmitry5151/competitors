@@ -298,6 +298,7 @@ table.color-settings td {
   vertical-align: middle;
   text-align: center;
   padding: 5px;
+  cursor: pointer;
 }
 table.new-color {
   border-collapse: separate;
