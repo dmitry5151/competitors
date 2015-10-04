@@ -106,7 +106,7 @@ body {
     z-index: 99;
     background: rgba(0,0,0,.4);
 
-    display: none;
+    //display: none;
 }
 
 .add {
@@ -135,13 +135,14 @@ body {
             font-size: 24px;
             color: #4b78bb;
             background: #fff;
-            border: none !important;
+            border: none;
             font-style: italic;
             border-radius: @border-radius;
 
             &::-moz-placeholder, &::-webkit-input-placeholder {
                 color: lighten(#4b78bb, 20%);
             }
+
         }
         input[type="submit"] {
             padding: @global-padding-small @global-padding;
@@ -167,6 +168,14 @@ body {
                 vertical-align: middle;
             }
         }
+    }
+    .error-input {
+        background: #ffc !important;
+        border: 1px solid #F90 !important;
+    }
+    input.ng-invalid-pattern {
+        background: #f66 !important;
+        border: 1px solid #F30 !important;
     }
 }
 
@@ -261,11 +270,15 @@ body {
     }
     tr {
         border-bottom: 1px solid #eee;
+        .stripe {
+            background-color: #ccc;
+        }
         &:hover {
             background: #ccc;
         }
     }
     td, th {
+        vertical-align: middle;
         padding: @global-padding-small @global-padding;
         border-right: 1px solid #eee;
     }
@@ -280,12 +293,25 @@ body {
         font-style: italic;
         color: #aaa;
     }
+    input.ng-invalid-pattern {
+        background: #f66 !important;
+        border: 1px solid #F30 !important;
+    }
 }
 .user-edit, .user-delete {
     cursor: pointer;
 }
 
 //============================ Вкладка настроек =============================//
+input[type="text"], input[type="submit"], button[type="button"] {
+    border: none;
+    padding: @global-padding-small;
+}
+input[type="submit"], button[type="button"] {
+    background: #aaa;
+    color: #444;
+    cursor: pointer;
+}
 form.settings {
     width: 100%;
     fieldset {
@@ -296,15 +322,7 @@ form.settings {
     legend {
         padding: @global-padding;
     }
-    input[type="text"], input[type="submit"], button[type="button"] {
-        border: none;
-        padding: @global-padding-small;
-    }
-    input[type="submit"], button[type="button"] {
-        background: #aaa;
-        color: #444;
-        cursor: pointer;
-    }
+
 }
 div.pattern-show {
     display: inline-block;
@@ -315,10 +333,10 @@ div.pattern-show {
     vertical-align: middle;
     padding: 5px;
 }
-table.color-settings {
+table.color-settings, table.edit-color {
     height: 40px;
     border-collapse: separate;
-    border-spacing: 5px;
+    //border-spacing: 5px;
     #color1, #color2, #color3 {
         cursor: pointer;
     }
@@ -327,6 +345,30 @@ table.color-settings {
         text-align: center;
         padding: @global-padding-small;
         cursor: pointer;
+    }
+}
+div.color-settings {
+    clear: both;
+    overflow: hidden;
+    padding: @global-padding-small;
+    .new-bg-color {
+        margin: 0 5px 5px 0;
+        float: left;
+        position: relative;
+        cursor: pointer;
+        width: 100px;
+        height: 100px;
+        z-index: 0;
+    }
+    .new-bg-color-edit {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 1;
+        background: url('../img/color-delete.png') no-repeat;
+        background-position: 0 0;
     }
 }
 table.new-color {
@@ -392,10 +434,15 @@ ul.icons {
 h1 {
     font-size: 32px;
     line-height: 38px;
-    margin-bottom: 15px;
+    margin-bottom: @global-padding;
 }
 h2 {
     font-size: 28px;
     line-height: 32px;
-    margin-bottom: 15px;
+    margin-bottom: @global-padding;
+}
+h3 {
+    font-size: 18px;
+    line-height: 24px;
+    margin-bottom: @global-padding;
 }

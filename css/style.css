@@ -88,7 +88,6 @@ body {
   width: 100%;
   z-index: 99;
   background: rgba(0, 0, 0, 0.4);
-  display: none;
 }
 .add {
   position: absolute;
@@ -115,7 +114,7 @@ body {
   font-size: 24px;
   color: #4b78bb;
   background: #fff;
-  border: none !important;
+  border: none;
   font-style: italic;
   border-radius: 5px;
 }
@@ -146,6 +145,14 @@ body {
 }
 .add-form-group > div input {
   vertical-align: middle;
+}
+.add .error-input {
+  background: #ffc !important;
+  border: 1px solid #F90 !important;
+}
+.add input.ng-invalid-pattern {
+  background: #f66 !important;
+  border: 1px solid #F30 !important;
 }
 .cansel {
   position: absolute;
@@ -227,11 +234,15 @@ body {
 .competitors-table tr {
   border-bottom: 1px solid #eee;
 }
+.competitors-table tr .stripe {
+  background-color: #ccc;
+}
 .competitors-table tr:hover {
   background: #ccc;
 }
 .competitors-table td,
 .competitors-table th {
+  vertical-align: middle;
   padding: 5px 15px;
   border-right: 1px solid #eee;
 }
@@ -248,8 +259,24 @@ body {
   font-style: italic;
   color: #aaa;
 }
+.competitors-table input.ng-invalid-pattern {
+  background: #f66 !important;
+  border: 1px solid #F30 !important;
+}
 .user-edit,
 .user-delete {
+  cursor: pointer;
+}
+input[type="text"],
+input[type="submit"],
+button[type="button"] {
+  border: none;
+  padding: 5px;
+}
+input[type="submit"],
+button[type="button"] {
+  background: #aaa;
+  color: #444;
   cursor: pointer;
 }
 form.settings {
@@ -263,18 +290,6 @@ form.settings fieldset {
 form.settings legend {
   padding: 15px;
 }
-form.settings input[type="text"],
-form.settings input[type="submit"],
-form.settings button[type="button"] {
-  border: none;
-  padding: 5px;
-}
-form.settings input[type="submit"],
-form.settings button[type="button"] {
-  background: #aaa;
-  color: #444;
-  cursor: pointer;
-}
 div.pattern-show {
   display: inline-block;
   vertical-align: bottom;
@@ -284,21 +299,49 @@ div.pattern-show {
   vertical-align: middle;
   padding: 5px;
 }
-table.color-settings {
+table.color-settings,
+table.edit-color {
   height: 40px;
   border-collapse: separate;
-  border-spacing: 5px;
 }
 table.color-settings #color1,
+table.edit-color #color1,
 table.color-settings #color2,
-table.color-settings #color3 {
+table.edit-color #color2,
+table.color-settings #color3,
+table.edit-color #color3 {
   cursor: pointer;
 }
-table.color-settings td {
+table.color-settings td,
+table.edit-color td {
   vertical-align: middle;
   text-align: center;
   padding: 5px;
   cursor: pointer;
+}
+div.color-settings {
+  clear: both;
+  overflow: hidden;
+  padding: 5px;
+}
+div.color-settings .new-bg-color {
+  margin: 0 5px 5px 0;
+  float: left;
+  position: relative;
+  cursor: pointer;
+  width: 100px;
+  height: 100px;
+  z-index: 0;
+}
+div.color-settings .new-bg-color-edit {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  background: url('../img/color-delete.png') no-repeat;
+  background-position: 0 0;
 }
 table.new-color {
   border-collapse: separate;
@@ -359,5 +402,10 @@ h1 {
 h2 {
   font-size: 28px;
   line-height: 32px;
+  margin-bottom: 15px;
+}
+h3 {
+  font-size: 18px;
+  line-height: 24px;
   margin-bottom: 15px;
 }

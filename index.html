@@ -13,7 +13,7 @@
         <link href="css/reset.css" rel="stylesheet" type="text/css"/>
         <link href="css/style.css" rel="stylesheet" type="text/css"/>
     </head>
-    <body ng-controller="compCtrl" style="background-color: {{settings.background}}">
+    <body ng-controller="compCtrl" style="background-color: #{{settings.background}}">
         <header class="header">
             <div class="c-table">
                 <div class="c-cell clip"></div>
@@ -22,7 +22,7 @@
         </header>
         <div class="container add-competitor"><!-- Добавить соискателя -->
             <div class="c-table">
-                <div class="c-cell plus" id="show-form"></div>
+                <div class="c-cell plus" ng-click="showAdd(true)"></div>
                 <div class="c-cell txt">Добавить соискателя</div>
             </div>
         </div>
@@ -41,47 +41,64 @@
                             <th style="width: 350px">Код</th>
                             <th style="width: 30px"></th>
                         </tr>
-                        <tr ng-repeat="competitor in competitors">
-                            <td><img class="user-edit" src="img/user-edit.png" alt="Редактировать" /></td>
-                            <td class="user-name">{{competitor.name}}</td>
-                            <td class="user-surname">{{competitor.surname}}</td>
-                            <td class="user-id">{{competitor.id}}</td>
-                            <td><img title="Удалить соискателя" class="user-delete" src="img/user-delete.png" /></td>
+                        <tr ng-repeat="competitor in competitors" ng-class-even="'stripe'">
+                            <td><img class="user-edit" src="img/user-edit.png" alt="Редактировать" ng-click="showEdit(true, $index)" /></td>
+                            <td class="user-name">
+                                <span ng-hide="edit[$index]">{{competitor.name}}</span>
+                                <span ng-show="edit[$index]"><input type="text" ng-model="competitor.name" value="{{competitor.name}}" ng-pattern="settings.pattern" /></span>
+                            </td>
+                            <td class="user-surname">
+                                <span ng-hide="edit[$index]">{{competitor.surname}}</span>
+                                <span ng-show="edit[$index]"><input type="text" ng-model="competitor.surname" value="{{competitor.surname}}" ng-pattern="settings.pattern" /></span>
+                            </td>
+                            <td class="user-id">
+                                <span ng-hide="edit[$index]">{{competitor.id}}</span>
+                                <span ng-show="edit[$index]">
+                                    <!--button type="button" ng-click="">Сохранить</button-->
+                                    <input type="submit" value="Сохранить" ng-click="editUser(competitor.id, competitor.name, competitor.surname, $index)" />
+                                    <button type="button" ng-click="showEdit(false, $index)">Отмена</button>
+                                </span>
+                            </td>
+                            <td><img ng-click='deleteUser(competitor.name, competitor.surname, competitor.id, $index)' title="Удалить соискателя" class="user-delete" src="img/user-delete.png" /></td>
                         </tr>
                     </table>
-                    <button type="button" id="users-delete-all">Удалить всех!</button>
+                    <button type="button" ng-click="deleteAllUsers()">Удалить всех!</button>
                 </div>
                 <div id="tab-2" ng-switch-when="2">
                     <h2>Настройки</h2>
-                    <form class="settings">
+                    <form class="settings" name="patternSettings" ng-submit="updatePattern(settings.pattern)" onSubmit="return false">
                         <fieldset>
                             <legend>Паттерн валидации фамилии</legend>
                             <div>
-                                <label for="pattern">Паттерн: <input id="pattern" name="pattern" type="text" placeholder="введите паттерн" /></label>
-                                <div class="pattern-show" id="pattern-show"></div>
-                                <input type="submit" id="saveSettings" value="Обновить" />
+                                <label for="pattern">Паттерн: <input name="pattern" type="text" placeholder="введите паттерн" ng-model="settings.pattern" ng-change="updTxt()" /></label>
+                                <div class="pattern-show" id="pattern-show">{{settings.pattern}}</div>
+                                <input ng-model="updPatternTxt" type="submit" id="saveSettings" value="{{updPatternTxt}}" />
                             </div>
                         </fieldset>
                     </form>
                     <form name="colorSettings" class="settings" ng-submit="addBgColor()">
                         <fieldset>
                             <legend>Внешний вид</legend>
-                            <table class="color-settings">
-                                <tr>
-                                    <td class="caption">Выберите цвет фона:</td>
-                                    <td ng-repeat="bgColor in bgColors" style="width: 75px; background-color: {{bgColor}}" ng-click="setBgColor(bgColor)"></td>
-                                    <!--td><button type='button'>Сохранить</button></td-->
-                                </tr>
-                            </table>
+                            <div class="color-settings"><!-- Новые настройки фона -->
+                                <h3>Выберите цвет фона:</h3>
+                                <div class="new-bg-color" style="background-color: #{{bgColor}}" ng-repeat="bgColor in bgColors" ng-click="setBgColor(bgColor)"><div ng-show="bgEdit.active" ng-click="deleteColor($event, $index, bgColor)" class="new-bg-color-edit"></div></div>
+                            </div>
                             <table class='new-color'>
                                 <tr>
-                                    <td><input type="text" name="newColorVal" ng-model="newColor.value" ng-pattern="/^#[0-9a-f]{6}/i" ng-trim placeholder='добавьте цвет фона'/></td>
+                                    <td># <input type="text" name="newColorVal" ng-model="newColor.value" ng-pattern="/^[0-9a-f]{6}/i" ng-trim placeholder='добавьте цвет фона'/></td>
                                     <td><input type="submit" value='Добавить' /></td>
-                                    <td ng-show="colorSettings.newColorVal.$valid" style="width: 100px; background-color: {{newColor.value}}"></td>
+                                    <td ng-show="colorSettings.newColorVal.$valid" style="width: 100px; background-color: #{{newColor.value}}"></td>
+                                </tr>
+                            </table>
+                            <table class="edit-color">
+                                <tr>
+                                    <td ng-hide="bgEdit.active"><button type="button" ng-click="editPalette(true)">Редактировать палитру</button></td>
+                                    <td ng-show="bgEdit.active"><button type="button" ng-click="editPalette(true)">Сохранить</button></td>
+                                    <td ng-show="bgEdit.active"><button type="button" ng-click="editPalette(false)">Отмена</button></td>
                                 </tr>
                             </table>
                         </fieldset>
-                        <button type="button" id="resetSettings">Сбросить настройки</button>
+                        <button type="button" id="resetSettings" ng-click="resetSettings()">Сбросить настройки</button>
                         <div>
                             {{settings}}
                         </div>
@@ -110,22 +127,22 @@
             </div>
         </footer>
         <div id="texture"></div>
-        <div class="overlay">
+        <div class="overlay" ng-show="comp.add">
             <div class="add">
                 <div class="h1">Добавить соискателя</div>
-                <form action="" class="add-form" id="new-user" onSubmit="return false">
+                <form action="" class="add-form" id="new-user" onSubmit="return false" ng-submit="addCompetitor()">
                     <div class="add-form-group">
-                        <label for="firstname">Имя: <input name="firstname" id="new-user-name" type="text" placeholder="Ваше имя" /></label>
+                        <label for="firstname">Имя: <input name="firstname" id="new-user-name" type="text" placeholder="Ваше имя" ng-model="newUserName" ng-pattern="settings.pattern" /></label>
                     </div>
                     <div class="add-form-group">
-                        <label for="surname">Фамилия: <input name="surname" id="new-user-surname" type="text" placeholder="Фамилия" /></label>
+                        <label for="surname">Фамилия: <input name="surname" id="new-user-surname" type="text" placeholder="Фамилия" ng-model="newUserSurname" ng-pattern="settings.pattern" /></label>
                     </div>
                     <div class="add-form-group">
                         <div><label for="multi"><input name="multi" id="multiAdd" type="checkbox" /> Добавить нескольких</label></div>
                         <input type="submit" value="OK" />
                     </div>
                 </form>
-                <div class="cansel c-table" id="cansel">
+                <div class="cansel c-table" ng-click="showAdd(false)">
                     <div class="c-cell cansel-img"></div>
                     <div class="c-cell cansel-txt">Отмена</div>
                 </div>
