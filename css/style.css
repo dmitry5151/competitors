@@ -257,7 +257,7 @@ body {
 }
 .competitors-table td:nth-child(4) {
   font-style: italic;
-  color: #aaa;
+  color: #4b78bb;
 }
 .competitors-table input.ng-invalid-pattern {
   background: #f66 !important;

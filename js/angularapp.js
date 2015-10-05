@@ -4,19 +4,20 @@ var manageCompetitors;
 manageCompetitors = angular.module('manageCompetitors', []);
 
 manageCompetitors.controller('compCtrl', function($scope, $http) {
-  $scope.work = "Приложение работает!";
+  var makeCodes;
   $scope.newColor = {};
   $scope.comp = {};
   $scope.edit = [];
   $scope.tab = {};
   $scope.bgEdit = {};
   $scope.updPatternTxt = "Обновить";
+  $scope.saveName = {};
   $scope.showTab = function(num) {
-    var i, len, ref1, tab;
+    var l, len, ref1, tab;
     $scope.tab.number = num;
     ref1 = $scope.tabs;
-    for (i = 0, len = ref1.length; i < len; i++) {
-      tab = ref1[i];
+    for (l = 0, len = ref1.length; l < len; l++) {
+      tab = ref1[l];
       tab["class"] = "";
     }
     $scope.tabs[num - 1]["class"] = "active";
@@ -51,13 +52,87 @@ manageCompetitors.controller('compCtrl', function($scope, $http) {
   ];
 
   /*
+  ======================== Действия с соискателями ===================================================
+   */
+
+  /*
   Загрузка соискателей
    */
   $http.get("http://applicants-tenet.rhcloud.com/api/1/dmitry5151/applicants").success(function(data) {
     $scope.competitors = data;
+    makeCodes($scope.competitors);
   }).error(function(data, status, headers, config) {
     console.log(status);
   });
+
+  /*
+  Добавление соискателя
+   */
+  $scope.showAdd = function(visible) {
+    $scope.comp.add = visible;
+  };
+  $scope.addCompetitor = function(formValid) {
+    var user;
+    if ($scope.newUserName !== void 0 && $scope.newUserName !== "" && $scope.newUserSurname !== void 0 && $scope.newUserSurname !== "") {
+      user = {
+        "name": $scope.newUserName,
+        "surname": $scope.newUserSurname
+      };
+      $http.post("http://applicants-tenet.rhcloud.com/api/1/dmitry5151/applicants", user).success(function(uid) {
+        user.id = uid.id;
+        $scope.competitors.push(user);
+        $scope.newUserName = "";
+        $scope.newUserSurname = "";
+        if (!$scope.multiUser) {
+          $scope.comp.add = false;
+        }
+        makeCodes($scope.competitors);
+      }).error(function(data, status, headers, config) {
+        console.log(status);
+        alert("Ошибка " + status + ". Данный соискатель уже имеется в базе.");
+      });
+    } else {
+      alert("Поля заполнены некорректно!");
+    }
+    return false;
+  };
+
+  /*
+  Редактирование соискателя
+   */
+  $scope.showEdit = function(visible, index, name, surname) {
+    if (visible) {
+      $scope.edit[index] = true;
+      $scope.saveName = {
+        "name": name,
+        "surname": surname
+      };
+    } else {
+      if ($scope.competitors[index].name !== void 0 && $scope.competitors[index].surname !== void 0) {
+        $scope.competitors[index].name = $scope.saveName.name;
+        $scope.competitors[index].surname = $scope.saveName.surname;
+        $scope.edit[index] = false;
+      }
+    }
+  };
+  $scope.editUser = function(id, name, surname, index) {
+    var user;
+    console.log(name, surname);
+    if (name !== void 0 && name !== "" && surname !== void 0 && surname !== "") {
+      user = {
+        "name": name,
+        "surname": surname
+      };
+      $http.put("http://applicants-tenet.rhcloud.com/api/1/dmitry5151/applicants/" + id, user).success(function() {
+        $scope.edit[index] = false;
+      }).error(function(data, status, headers, config) {
+        console.log(status);
+        alert("Ошибка " + status + ". Данный соискатель уже имеется в базе.");
+      });
+    } else {
+      alert("Имя или фамилия не соответствуют шаблону!");
+    }
+  };
 
   /*
   Удаление соискателя
@@ -70,31 +145,6 @@ manageCompetitors.controller('compCtrl', function($scope, $http) {
         $scope.competitors.splice(index, 1);
       }).error(function(data, status, headers, config) {
         console.log(status);
-      });
-    }
-  };
-
-  /*
-  Редактирование соискателя
-   */
-  $scope.showEdit = function(visible, index) {
-    if (visible) {
-      $scope.edit[index] = true;
-    } else {
-      if ($scope.competitors[index].name !== void 0 && $scope.competitors[index].surname !== void 0) {
-        $scope.edit[index] = false;
-      }
-    }
-  };
-  $scope.editUser = function(id, name, surname, index) {
-    var user;
-    if (name !== void 0 && surname !== void 0) {
-      user = {
-        "name": name,
-        "surname": surname
-      };
-      $http.put("http://applicants-tenet.rhcloud.com/api/1/dmitry5151/applicants/" + id, user).success(function() {
-        $scope.edit[index] = false;
       });
     }
   };
@@ -115,31 +165,33 @@ manageCompetitors.controller('compCtrl', function($scope, $http) {
   };
 
   /*
-  Добавление соискателя
+  Рассчитываем коды для пользователей
    */
-  $scope.showAdd = function(visible) {
-    $scope.comp.add = visible;
-  };
-  $scope.addCompetitor = function() {
-    var user;
-    if ($scope.newUserName !== void 0 && $scope.newUserSurname !== void 0) {
-      user = {
-        "name": $scope.newUserName,
-        "surname": $scope.newUserSurname
-      };
-      $http.post("http://applicants-tenet.rhcloud.com/api/1/dmitry5151/applicants", user).success(function(uid) {
-        user.id = uid.id;
-        $scope.competitors.push(user);
-        $scope.newUserName = "";
-        $scope.newUserSurname = "";
-        if (!$scope.multiUser) {
-          $scope.comp.add = false;
+  makeCodes = function(data) {
+    var arr, g, i, j, k, key, l, len, len1, m, ref1, str, sum, sur, val;
+    ref1 = $scope.competitors;
+    for (key in ref1) {
+      val = ref1[key];
+      sum = 0;
+      arr = [];
+      sur = val.surname.toLowerCase();
+      for (k = l = 0, len = sur.length; l < len; k = ++l) {
+        j = sur[k];
+        sum += j.charCodeAt(0);
+        arr.push(j);
+      }
+      console.log(arr);
+      arr.sort();
+      str = "";
+      for (i = m = 0, len1 = arr.length; m < len1; i = ++m) {
+        g = arr[i];
+        if (str.indexOf(g) < 0) {
+          str += g;
         }
-      }).error(function(data, status, headers, config) {
-        console.log(status);
-      });
+      }
+      console.log(str);
+      $scope.competitors[key].code = sum + str;
     }
-    return false;
   };
 
   /*

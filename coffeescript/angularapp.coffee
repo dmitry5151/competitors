@@ -1,7 +1,6 @@
 manageCompetitors = angular.module 'manageCompetitors', []
 
 manageCompetitors.controller 'compCtrl', ($scope, $http) ->
-  $scope.work = "Приложение работает!"
   $scope.newColor = {}
   $scope.comp = {}
   $scope.edit = []
@@ -9,11 +8,8 @@ manageCompetitors.controller 'compCtrl', ($scope, $http) ->
   $scope.bgEdit = {}
   $scope.updPatternTxt = "Обновить"
 
-  #$scope.bgColors = []
+  $scope.saveName = {} # Сохраняем имя соискателя при редактировании на случай отмены и возврата к старому значению
 
-  #$scope.bgColorCurrent = $scope.settings.background
-
-  #$scope.newColor = "#222"
   # Активация вкладок
   $scope.showTab = (num) -> # num - номер активируемой вкладки
     $scope.tab.number = num
@@ -31,15 +27,81 @@ manageCompetitors.controller 'compCtrl', ($scope, $http) ->
     {tab: 3, name: "Об авторе", "class": "", id: "tab-3", file: "author.html", show: false}
   ]
 
+  ###
+======================== Действия с соискателями ===================================================
+  ###
 
   ###
   Загрузка соискателей
   ###
   $http.get("http://applicants-tenet.rhcloud.com/api/1/dmitry5151/applicants").success (data) ->
     $scope.competitors = data
+    makeCodes $scope.competitors
     return
   .error (data, status, headers, config) ->
     console.log status
+    return
+
+  ###
+  Добавление соискателя
+  ###
+  $scope.showAdd = (visible) ->
+    $scope.comp.add = visible
+    return
+
+  $scope.addCompetitor = (formValid) ->
+    if $scope.newUserName != undefined and $scope.newUserName != "" and $scope.newUserSurname != undefined and $scope.newUserSurname != ""
+      user =
+        "name": $scope.newUserName
+        "surname": $scope.newUserSurname
+      $http.post("http://applicants-tenet.rhcloud.com/api/1/dmitry5151/applicants", user).success (uid) ->
+        user.id = uid.id
+        $scope.competitors.push user
+        $scope.newUserName = ""
+        $scope.newUserSurname = ""
+        if not $scope.multiUser
+          $scope.comp.add = false
+        makeCodes $scope.competitors
+        return
+      .error (data, status, headers, config) ->
+        console.log status
+        alert("Ошибка #{status}. Данный соискатель уже имеется в базе.")
+        return
+    #console.log $scope.newUserName, $scope.newUserSurname
+    else alert "Поля заполнены некорректно!"
+    return false
+
+  ###
+  Редактирование соискателя
+  ###
+  $scope.showEdit = (visible, index, name, surname) ->
+    if visible
+      $scope.edit[index] = true
+      $scope.saveName =
+        "name": name
+        "surname": surname
+      #$scope.edit[index].index = index
+    else
+      if $scope.competitors[index].name != undefined and $scope.competitors[index].surname != undefined
+        $scope.competitors[index].name = $scope.saveName.name
+        $scope.competitors[index].surname = $scope.saveName.surname
+        $scope.edit[index] = false
+    return
+
+  $scope.editUser = (id, name, surname, index) ->
+    console.log name, surname
+    if name != undefined and name != "" and surname != undefined and surname != ""
+      user =
+        "name": name
+        "surname": surname
+      $http.put("http://applicants-tenet.rhcloud.com/api/1/dmitry5151/applicants/#{id}", user).success ->
+        $scope.edit[index] = false
+        return
+      .error (data, status, headers, config) ->
+        console.log status
+        alert("Ошибка #{status}. Данный соискатель уже имеется в базе.")
+        return
+    else alert "Имя или фамилия не соответствуют шаблону!"
     return
 
   ###
@@ -56,28 +118,7 @@ manageCompetitors.controller 'compCtrl', ($scope, $http) ->
         return
     return
 
-  ###
-  Редактирование соискателя
-  ###
-  $scope.showEdit = (visible, index) ->
-    if visible
-      $scope.edit[index] = true
-      #$scope.edit[index].index = index
-    else
-      if $scope.competitors[index].name != undefined and $scope.competitors[index].surname != undefined
-        $scope.edit[index] = false
-    return
 
-  $scope.editUser = (id, name, surname, index) ->
-    if name != undefined and surname != undefined
-      user =
-        "name": name
-        "surname": surname
-      $http.put("http://applicants-tenet.rhcloud.com/api/1/dmitry5151/applicants/#{id}", user).success ->
-        $scope.edit[index] = false
-        return
-    #console.log name, surname, id
-    return
 
   ###
   Удаление всех соискателей
@@ -94,31 +135,26 @@ manageCompetitors.controller 'compCtrl', ($scope, $http) ->
     return
 
   ###
-  Добавление соискателя
+  Рассчитываем коды для пользователей
   ###
-  $scope.showAdd = (visible) ->
-    $scope.comp.add = visible
+  makeCodes = (data) ->
+    # Получаем код по фамилии
+    for key, val of $scope.competitors # перебираем все фамилии
+      sum = 0
+      arr = []
+      sur = val.surname.toLowerCase()
+      for j, k in sur
+        sum += j.charCodeAt 0
+        arr.push(j)
+      console.log arr
+      arr.sort()
+      str = ""
+      for g, i in arr # g - Значение, i - индекс
+        if str.indexOf(g) < 0
+          str += g
+      console.log str
+      $scope.competitors[key].code = sum + str
     return
-
-  $scope.addCompetitor = ->
-    if $scope.newUserName != undefined and $scope.newUserSurname != undefined
-      user =
-        "name": $scope.newUserName
-        "surname": $scope.newUserSurname
-      $http.post("http://applicants-tenet.rhcloud.com/api/1/dmitry5151/applicants", user).success (uid) ->
-        user.id = uid.id
-        $scope.competitors.push user
-        $scope.newUserName = ""
-        $scope.newUserSurname = ""
-        if not $scope.multiUser
-          $scope.comp.add = false
-        return
-      .error (data, status, headers, config) ->
-        console.log status
-        return
-    #console.log $scope.newUserName, $scope.newUserSurname
-
-    return false
 
 
   ###

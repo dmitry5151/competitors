@@ -41,7 +41,7 @@
                             <th style="width: 30px"></th>
                         </tr>
                         <tr ng-repeat="competitor in competitors" ng-class-odd="'stripe'">
-                            <td><img class="user-edit" src="img/user-edit.png" alt="Редактировать" ng-click="showEdit(true, $index)" /></td>
+                            <td><img class="user-edit" src="img/user-edit.png" alt="Редактировать" ng-click="showEdit(true, $index, competitor.name, competitor.surname)" /></td>
                             <td class="user-name">
                                 <span ng-hide="edit[$index]">{{competitor.name}}</span>
                                 <span ng-show="edit[$index]"><input type="text" ng-model="competitor.name" value="{{competitor.name}}" ng-pattern="settings.pattern" /></span>
@@ -51,7 +51,7 @@
                                 <span ng-show="edit[$index]"><input type="text" ng-model="competitor.surname" value="{{competitor.surname}}" ng-pattern="settings.pattern" /></span>
                             </td>
                             <td class="user-id">
-                                <span ng-hide="edit[$index]">{{competitor.id}}</span>
+                                <span ng-hide="edit[$index]">{{competitor.code}}</span>
                                 <span ng-show="edit[$index]">
                                     <!--button type="button" ng-click="">Сохранить</button-->
                                     <input type="submit" value="Сохранить" ng-click="editUser(competitor.id, competitor.name, competitor.surname, $index)" />
@@ -151,7 +151,7 @@
         <div class="overlay" ng-show="comp.add">
             <div class="add">
                 <div class="h1">Добавить соискателя</div>
-                <form action="" class="add-form" id="new-user" onSubmit="return false" ng-submit="addCompetitor()">
+                <form action="" name="newUserCreate" class="add-form" id="new-user" onSubmit="return false" ng-submit="addCompetitor()">
                     <div class="add-form-group">
                         <label for="firstname">Имя: <input name="firstname" type="text" placeholder="Ваше имя" ng-model="newUserName" ng-pattern="settings.pattern" /></label>
                     </div>
