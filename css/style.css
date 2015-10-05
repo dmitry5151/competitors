@@ -234,8 +234,8 @@ body {
 .competitors-table tr {
   border-bottom: 1px solid #eee;
 }
-.competitors-table tr .stripe {
-  background-color: #ccc;
+.competitors-table tr.stripe {
+  background-color: #ccc !important;
 }
 .competitors-table tr:hover {
   background: #ccc;

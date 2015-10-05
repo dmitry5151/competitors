@@ -12,11 +12,11 @@ manageCompetitors.controller('compCtrl', function($scope, $http) {
   $scope.bgEdit = {};
   $scope.updPatternTxt = "Обновить";
   $scope.showTab = function(num) {
-    var i, len, ref, tab;
+    var i, len, ref1, tab;
     $scope.tab.number = num;
-    ref = $scope.tabs;
-    for (i = 0, len = ref.length; i < len; i++) {
-      tab = ref[i];
+    ref1 = $scope.tabs;
+    for (i = 0, len = ref1.length; i < len; i++) {
+      tab = ref1[i];
       tab["class"] = "";
     }
     $scope.tabs[num - 1]["class"] = "active";
@@ -118,11 +118,7 @@ manageCompetitors.controller('compCtrl', function($scope, $http) {
   Добавление соискателя
    */
   $scope.showAdd = function(visible) {
-    if (visible) {
-      $scope.comp.add = true;
-    } else {
-      $scope.comp.add = false;
-    }
+    $scope.comp.add = visible;
   };
   $scope.addCompetitor = function() {
     var user;
@@ -136,7 +132,9 @@ manageCompetitors.controller('compCtrl', function($scope, $http) {
         $scope.competitors.push(user);
         $scope.newUserName = "";
         $scope.newUserSurname = "";
-        $scope.comp.add = false;
+        if (!$scope.multiUser) {
+          $scope.comp.add = false;
+        }
       }).error(function(data, status, headers, config) {
         console.log(status);
       });
@@ -149,12 +147,21 @@ manageCompetitors.controller('compCtrl', function($scope, $http) {
   Загрузка настроек
    */
   $http.get("http://applicants-tenet.rhcloud.com/api/1/dmitry5151/settings").success(function(data) {
+    var a, key, ref, value;
     $scope.settings = data;
     if (!$scope.settings.bgColors) {
       $scope.bgColors = ["666", "999", "eee"];
     } else {
       $scope.bgColors = $scope.settings.bgColors;
     }
+    ref = $scope.bgColors;
+    a = [];
+    for (key in ref) {
+      value = ref[key];
+      a.push(value);
+    }
+    $scope.bgColors = a;
+    console.log($scope.bgColors);
   }).error(function(data, status, headers, config) {
     console.log(status);
   });
@@ -214,17 +221,33 @@ manageCompetitors.controller('compCtrl', function($scope, $http) {
   /*
   Редактируем палитру (удаляем ненужные цвета)
    */
-  $scope.editPalette = function(active) {
+  $scope.editPalette = function(active, save) {
+    var bgColors;
+    if (save) {
+      bgColors = {
+        "bgColors": ""
+      };
+      $scope.settings.bgColors = $scope.bgColors;
+      $http["delete"]("http://applicants-tenet.rhcloud.com/api/1/dmitry5151/settings").success(function(data) {
+        $http.put("http://applicants-tenet.rhcloud.com/api/1/dmitry5151/settings", $scope.settings).success(function(data) {
+          console.log("Цвета сохранены");
+          $scope.bgEdit.active = active;
+        }).error(function(data, status, headers, config) {
+          console.log(status);
+          $scope.updPatternTxt = "Ошибка сохранения";
+        });
+      }).error(function(data, status, headers, config) {
+        console.log(status);
+        $scope.updPatternTxt = "Ошибка сохранения";
+      });
+    } else {
+
+    }
     $scope.bgEdit.active = active;
   };
   $scope.deleteColor = function(event, index, color) {
-    var key, ref, value;
     console.log("index = " + index);
-    ref = $scope.bgColors;
-    for (key in ref) {
-      value = ref[key];
-      console.log(key, value);
-    }
+    $scope.bgColors.splice(index, 1);
     event.stopPropagation();
   };
 

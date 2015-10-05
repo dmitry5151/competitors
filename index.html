@@ -5,7 +5,6 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <!-- Скрипты -->
-        <!--script src="js/jquery-2.1.4.min.js" type="text/javascript"></script-->
         <script src="js/angular.min.js" type="text/javascript"></script>
         <script src="js/angularapp.js" type="text/javascript"></script>
         <!--script src="js/script.js" type="text/javascript"></script-->
@@ -41,7 +40,7 @@
                             <th style="width: 350px">Код</th>
                             <th style="width: 30px"></th>
                         </tr>
-                        <tr ng-repeat="competitor in competitors" ng-class-even="'stripe'">
+                        <tr ng-repeat="competitor in competitors" ng-class-odd="'stripe'">
                             <td><img class="user-edit" src="img/user-edit.png" alt="Редактировать" ng-click="showEdit(true, $index)" /></td>
                             <td class="user-name">
                                 <span ng-hide="edit[$index]">{{competitor.name}}</span>
@@ -93,15 +92,12 @@
                             <table class="edit-color">
                                 <tr>
                                     <td ng-hide="bgEdit.active"><button type="button" ng-click="editPalette(true)">Редактировать палитру</button></td>
-                                    <td ng-show="bgEdit.active"><button type="button" ng-click="editPalette(true)">Сохранить</button></td>
+                                    <td ng-show="bgEdit.active"><button type="button" ng-click="editPalette(false, true)">Сохранить</button></td>
                                     <td ng-show="bgEdit.active"><button type="button" ng-click="editPalette(false)">Отмена</button></td>
                                 </tr>
                             </table>
                         </fieldset>
                         <button type="button" id="resetSettings" ng-click="resetSettings()">Сбросить настройки</button>
-                        <div>
-                            {{settings}}
-                        </div>
                     </form>
                 </div>
                 <div id="tab-3" ng-switch-when="3">
@@ -132,13 +128,13 @@
                 <div class="h1">Добавить соискателя</div>
                 <form action="" class="add-form" id="new-user" onSubmit="return false" ng-submit="addCompetitor()">
                     <div class="add-form-group">
-                        <label for="firstname">Имя: <input name="firstname" id="new-user-name" type="text" placeholder="Ваше имя" ng-model="newUserName" ng-pattern="settings.pattern" /></label>
+                        <label for="firstname">Имя: <input name="firstname" type="text" placeholder="Ваше имя" ng-model="newUserName" ng-pattern="settings.pattern" /></label>
                     </div>
                     <div class="add-form-group">
-                        <label for="surname">Фамилия: <input name="surname" id="new-user-surname" type="text" placeholder="Фамилия" ng-model="newUserSurname" ng-pattern="settings.pattern" /></label>
+                        <label for="surname">Фамилия: <input name="surname" type="text" placeholder="Фамилия" ng-model="newUserSurname" ng-pattern="settings.pattern" /></label>
                     </div>
                     <div class="add-form-group">
-                        <div><label for="multi"><input name="multi" id="multiAdd" type="checkbox" /> Добавить нескольких</label></div>
+                        <div><label for="multi"><input name="multi" ng-model="multiUser" type="checkbox" /> Добавить нескольких</label></div>
                         <input type="submit" value="OK" />
                     </div>
                 </form>

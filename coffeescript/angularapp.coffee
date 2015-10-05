@@ -97,9 +97,7 @@ manageCompetitors.controller 'compCtrl', ($scope, $http) ->
   Добавление соискателя
   ###
   $scope.showAdd = (visible) ->
-    if visible
-      $scope.comp.add = true
-    else $scope.comp.add = false
+    $scope.comp.add = visible
     return
 
   $scope.addCompetitor = ->
@@ -112,7 +110,8 @@ manageCompetitors.controller 'compCtrl', ($scope, $http) ->
         $scope.competitors.push user
         $scope.newUserName = ""
         $scope.newUserSurname = ""
-        $scope.comp.add = false
+        if not $scope.multiUser
+          $scope.comp.add = false
         return
       .error (data, status, headers, config) ->
         console.log status
@@ -128,12 +127,16 @@ manageCompetitors.controller 'compCtrl', ($scope, $http) ->
   ###
   $http.get("http://applicants-tenet.rhcloud.com/api/1/dmitry5151/settings").success (data) ->
     $scope.settings = data
-    #$scope.settings.bgColors = ["#666"]
     if not $scope.settings.bgColors
       $scope.bgColors = ["666", "999", "eee"]
     else $scope.bgColors = $scope.settings.bgColors
-    #$scope.bgColors = $scope.settings.bgColors ? $scope.settings.bgColors : ["#666", "#999", "#eee"]
-     #= $scope.settings.bgColors
+    # Преобразовать объект обратно в массив по ключам
+    ref = $scope.bgColors
+    a = []
+    for key, value of ref
+      a.push value
+    $scope.bgColors = a
+    console.log $scope.bgColors
     return
   .error (data, status, headers, config) ->
     console.log status
@@ -187,7 +190,6 @@ manageCompetitors.controller 'compCtrl', ($scope, $http) ->
       $http.put("http://applicants-tenet.rhcloud.com/api/1/dmitry5151/settings", bgColors).success (data) ->
         #$scope.settings.background = bg.background
         console.log "Цвета добавлены"
-
         return
       .error (data, status, headers, config) ->
         console.log status
@@ -199,15 +201,32 @@ manageCompetitors.controller 'compCtrl', ($scope, $http) ->
   ###
   Редактируем палитру (удаляем ненужные цвета)
   ###
-  $scope.editPalette = (active) ->
+  $scope.editPalette = (active, save) ->
+    if save
+      bgColors = "bgColors": ""
+      $scope.settings.bgColors = $scope.bgColors
+      #console.log $scope.settings
+      $http.delete("http://applicants-tenet.rhcloud.com/api/1/dmitry5151/settings").success (data) -> # Сбрасываем настрйки
+        $http.put("http://applicants-tenet.rhcloud.com/api/1/dmitry5151/settings", $scope.settings).success (data) -> # Пересохраняем
+          console.log "Цвета сохранены"
+          $scope.bgEdit.active = active
+          return
+        .error (data, status, headers, config) ->
+          console.log status
+          $scope.updPatternTxt = "Ошибка сохранения"
+          return
+        return
+      .error (data, status, headers, config) ->
+        console.log status
+        $scope.updPatternTxt = "Ошибка сохранения"
+        return
+    else
     $scope.bgEdit.active = active
-    #console.log $scope.bgColors
     return
 
   $scope.deleteColor = (event, index, color) ->
     console.log "index = #{index}"
-    for key, value of $scope.bgColors
-      console.log key, value
+    $scope.bgColors.splice index, 1
     event.stopPropagation()
     return
 
